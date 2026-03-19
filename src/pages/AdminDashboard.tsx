@@ -1,4 +1,4 @@
-import { Package, Users, Truck, Leaf, BarChart3 } from "lucide-react";
+import { Package, Users, Truck, Leaf, BarChart3, ShoppingBag } from "lucide-react";
 import { StatCard } from "@/components/StatCard";
 import { analyticsData, mockPickups } from "@/data/mockData";
 import { PickupCard } from "@/components/PickupCard";
@@ -6,6 +6,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pi
 
 export default function AdminDashboard() {
   const pendingPickups = mockPickups.filter((p) => p.status === "pending");
+  const ecommercePickups = mockPickups.filter((p) => p.isEcommercePackaging);
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -14,11 +15,12 @@ export default function AdminDashboard() {
         <p className="text-sm text-muted-foreground">System-wide analytics and management</p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         <StatCard title="Total Waste" value={`${analyticsData.totalWaste} kg`} icon={<Package className="h-4 w-4" />} trend="+12%" />
         <StatCard title="Total Requests" value={analyticsData.totalRequests} icon={<BarChart3 className="h-4 w-4" />} />
         <StatCard title="Active Users" value={analyticsData.activeUsers} icon={<Users className="h-4 w-4" />} trend="+8%" />
         <StatCard title="Carbon Saved" value={`${analyticsData.carbonSaved} kg`} icon={<Leaf className="h-4 w-4" />} subtitle="CO₂" />
+        <StatCard title="Packaging" value={`${analyticsData.packagingWaste} kg`} icon={<ShoppingBag className="h-4 w-4" />} subtitle="E-commerce" />
       </div>
 
       <div className="grid md:grid-cols-2 gap-4">

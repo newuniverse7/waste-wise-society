@@ -1,5 +1,6 @@
 import { PickupRequest } from "@/data/types";
 import { Badge } from "@/components/ui/badge";
+import { Clock, Package } from "lucide-react";
 
 const statusColors: Record<string, string> = {
   pending: "bg-warning/10 text-warning border-warning/20",
@@ -11,6 +12,12 @@ const wasteIcons: Record<string, string> = {
   plastic: "♻️",
   cardboard: "📦",
   "e-waste": "🔌",
+};
+
+const timeSlotLabels: Record<string, string> = {
+  morning: "🌅 Morning",
+  afternoon: "☀️ Afternoon",
+  evening: "🌙 Evening",
 };
 
 interface PickupCardProps {
@@ -48,9 +55,31 @@ export function PickupCard({ pickup, showActions, onStatusChange }: PickupCardPr
           <div className="font-medium text-primary">{pickup.points}</div>
         </div>
       </div>
-      <div className="mt-2 text-xs text-muted-foreground">
-        QR: {pickup.qrCode} · {new Date(pickup.createdAt).toLocaleDateString()}
+
+      {/* Time slot & estimated time */}
+      {(pickup.timeSlot || pickup.estimatedPickupTime) && (
+        <div className="mt-2 flex items-center gap-3 text-xs">
+          {pickup.timeSlot && (
+            <span className="text-muted-foreground">{timeSlotLabels[pickup.timeSlot] || pickup.timeSlot}</span>
+          )}
+          {pickup.estimatedPickupTime && pickup.status !== "completed" && (
+            <span className="flex items-center gap-1 text-accent">
+              <Clock className="h-3 w-3" />
+              ETA: {pickup.estimatedPickupTime}
+            </span>
+          )}
+        </div>
+      )}
+
+      <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
+        <span>QR: {pickup.qrCode} · {new Date(pickup.createdAt).toLocaleDateString()}</span>
+        {pickup.isEcommercePackaging && (
+          <span className="inline-flex items-center gap-0.5 text-warning">
+            <Package className="h-3 w-3" /> e-comm
+          </span>
+        )}
       </div>
+
       {showActions && pickup.status !== "completed" && onStatusChange && (
         <div className="mt-3 flex gap-2">
           {pickup.status === "pending" && (

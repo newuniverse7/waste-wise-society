@@ -7,6 +7,7 @@ export interface User {
   points: number;
   carbonSaved: number;
   joinedDate: string;
+  badges?: Badge[];
 }
 
 export interface Worker {
@@ -21,6 +22,7 @@ export interface Worker {
 
 export type WasteType = "plastic" | "cardboard" | "e-waste";
 export type PickupStatus = "pending" | "in_progress" | "completed";
+export type TimeSlot = "morning" | "afternoon" | "evening";
 
 export interface PickupRequest {
   id: string;
@@ -40,6 +42,9 @@ export interface PickupRequest {
   lat: number;
   lng: number;
   proofImage?: string;
+  timeSlot?: TimeSlot;
+  isEcommercePackaging?: boolean;
+  estimatedPickupTime?: string;
 }
 
 export interface Notification {
@@ -64,4 +69,12 @@ export interface AuthState {
   role: UserRole;
   userId: string;
   userName: string;
+}
+
+export interface Badge {
+  id: string;
+  name: string;
+  icon: string;
+  description: string;
+  earned: boolean;
 }
