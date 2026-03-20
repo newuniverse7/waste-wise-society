@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { mockPickups } from "@/data/mockData";
 import { PickupCard } from "@/components/PickupCard";
-import { ClipboardList, Truck } from "lucide-react";
+import { QRCodeDisplay } from "@/components/QRCodeDisplay";
+import { ClipboardList, Truck, QrCode } from "lucide-react";
 import { StatCard } from "@/components/StatCard";
 import { toast } from "sonner";
 import { PickupRequest } from "@/data/types";
@@ -10,6 +11,7 @@ export default function WorkerDashboard() {
   const [pickups, setPickups] = useState<PickupRequest[]>(
     mockPickups.filter((p) => p.workerId === "w1" || p.status === "pending")
   );
+  const [selectedQR, setSelectedQR] = useState<string | null>(null);
 
   const handleStatusChange = (id: string, status: string) => {
     setPickups((prev) =>
@@ -35,12 +37,28 @@ export default function WorkerDashboard() {
         <StatCard title="Completed" value={completed.length} icon={<ClipboardList className="h-4 w-4" />} />
       </div>
 
+      {/* QR Code verification popup */}
+      {selectedQR && (
+        <div className="rounded-lg border bg-card p-4 flex flex-col items-center gap-2">
+          <div className="flex items-center gap-2 text-sm font-medium">
+            <QrCode className="h-4 w-4 text-primary" /> Verification QR
+          </div>
+          <QRCodeDisplay value={`ecotrack://pickup/${selectedQR}`} label={selectedQR} size={100} />
+          <button onClick={() => setSelectedQR(null)} className="text-xs text-muted-foreground hover:underline">Close</button>
+        </div>
+      )}
+
       {active.length > 0 && (
         <div>
           <h2 className="text-sm font-semibold mb-3">Active Pickups</h2>
           <div className="grid gap-3 md:grid-cols-2">
             {active.map((p) => (
-              <PickupCard key={p.id} pickup={p} showActions onStatusChange={handleStatusChange} />
+              <div key={p.id}>
+                <PickupCard pickup={p} showActions onStatusChange={handleStatusChange} />
+                <button onClick={() => setSelectedQR(p.qrCode)} className="text-xs text-accent hover:underline mt-1 flex items-center gap-1">
+                  <QrCode className="h-3 w-3" /> Show QR
+                </button>
+              </div>
             ))}
           </div>
         </div>

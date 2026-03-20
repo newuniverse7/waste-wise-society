@@ -1,12 +1,14 @@
-import { Package, Users, Truck, Leaf, BarChart3, ShoppingBag } from "lucide-react";
+import { Package, Users, Truck, Leaf, BarChart3, ShoppingBag, Building2 } from "lucide-react";
 import { StatCard } from "@/components/StatCard";
-import { analyticsData, mockPickups } from "@/data/mockData";
+import { analyticsData, mockPickups, mockUsers } from "@/data/mockData";
 import { PickupCard } from "@/components/PickupCard";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import { calculateSocietyIndex } from "@/lib/ecoScore";
 
 export default function AdminDashboard() {
   const pendingPickups = mockPickups.filter((p) => p.status === "pending");
-  const ecommercePickups = mockPickups.filter((p) => p.isEcommercePackaging);
+  const societyIndex = calculateSocietyIndex(mockUsers, mockPickups);
+  const topSociety = societyIndex[0];
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -40,15 +42,7 @@ export default function AdminDashboard() {
           <h3 className="text-sm font-semibold mb-4">Waste by Type</h3>
           <ResponsiveContainer width="100%" height={200}>
             <PieChart>
-              <Pie
-                data={analyticsData.wasteByType}
-                cx="50%"
-                cy="50%"
-                innerRadius={50}
-                outerRadius={80}
-                dataKey="value"
-                label={({ name, value }) => `${name} ${value}%`}
-              >
+              <Pie data={analyticsData.wasteByType} cx="50%" cy="50%" innerRadius={50} outerRadius={80} dataKey="value" label={({ name, value }) => `${name} ${value}%`}>
                 {analyticsData.wasteByType.map((entry, i) => (
                   <Cell key={i} fill={entry.fill} />
                 ))}
@@ -58,6 +52,23 @@ export default function AdminDashboard() {
           </ResponsiveContainer>
         </div>
       </div>
+
+      {/* Top Society Card */}
+      {topSociety && (
+        <div className="rounded-lg border bg-card p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <Building2 className="h-4 w-4 text-primary" />
+            <h3 className="text-sm font-semibold">Top Society</h3>
+          </div>
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="font-medium">🥇 {topSociety.name}</div>
+              <div className="text-xs text-muted-foreground">{topSociety.activeUsers} users · {topSociety.totalWaste} kg · {topSociety.packagingPercentage}% packaging</div>
+            </div>
+            <div className="text-2xl font-bold text-primary">{topSociety.sustainabilityScore}</div>
+          </div>
+        </div>
+      )}
 
       <div>
         <div className="flex items-center justify-between mb-3">
