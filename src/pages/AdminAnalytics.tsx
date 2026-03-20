@@ -1,9 +1,14 @@
-import { analyticsData } from "@/data/mockData";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, AreaChart, Area } from "recharts";
-import { BarChart3, Package, TrendingUp, Leaf } from "lucide-react";
+import { analyticsData, mockUsers, mockPickups } from "@/data/mockData";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, AreaChart, Area } from "recharts";
+import { BarChart3, Package, TrendingUp, Leaf, Building2 } from "lucide-react";
 import { StatCard } from "@/components/StatCard";
+import { SocietyLeaderboard } from "@/components/SocietyLeaderboard";
+import { calculateSocietyIndex } from "@/lib/ecoScore";
 
 export default function AdminAnalytics() {
+  const societyIndex = calculateSocietyIndex(mockUsers, mockPickups);
+  const packagingPct = ((analyticsData.packagingWaste / analyticsData.totalWaste) * 100).toFixed(0);
+
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center gap-2">
@@ -70,12 +75,15 @@ export default function AdminAnalytics() {
         <div className="rounded-lg border bg-card p-4">
           <h3 className="text-sm font-semibold mb-4 flex items-center gap-2">
             <Package className="h-4 w-4 text-warning" />
-            E-commerce Packaging Stats
+            Packaging Waste Intelligence
           </h3>
           <div className="space-y-4">
-            <div className="text-center py-4">
-              <div className="text-3xl font-bold text-primary">{analyticsData.packagingWaste} kg</div>
-              <div className="text-xs text-muted-foreground mt-1">packaging waste collected</div>
+            <div className="text-center py-3">
+              <div className="text-3xl font-bold text-primary">{packagingPct}%</div>
+              <div className="text-xs text-muted-foreground mt-1">of total waste is e-commerce packaging</div>
+            </div>
+            <div className="rounded-md bg-warning/10 border border-warning/20 p-3 text-xs text-warning">
+              💡 Insight: High packaging ratio indicates strong e-commerce activity. Consider targeted packaging reduction campaigns.
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="rounded-md bg-primary/5 p-3 text-center">
@@ -83,12 +91,21 @@ export default function AdminAnalytics() {
                 <div className="text-xs text-muted-foreground">requests</div>
               </div>
               <div className="rounded-md bg-accent/5 p-3 text-center">
-                <div className="text-lg font-semibold">{((analyticsData.packagingWaste / analyticsData.totalWaste) * 100).toFixed(0)}%</div>
-                <div className="text-xs text-muted-foreground">of total waste</div>
+                <div className="text-lg font-semibold">{analyticsData.packagingWaste} kg</div>
+                <div className="text-xs text-muted-foreground">collected</div>
               </div>
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Society Sustainability Index */}
+      <div>
+        <div className="flex items-center gap-2 mb-4">
+          <Building2 className="h-5 w-5 text-primary" />
+          <h2 className="text-lg font-semibold">Society Sustainability Index</h2>
+        </div>
+        <SocietyLeaderboard societies={societyIndex} />
       </div>
     </div>
   );

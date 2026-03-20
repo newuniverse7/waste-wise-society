@@ -1,10 +1,21 @@
-import { mockUsers } from "@/data/mockData";
-import { Trophy, Leaf } from "lucide-react";
+import { useState } from "react";
+import { mockUsers, mockPickups } from "@/data/mockData";
+import { Trophy, Leaf, Building2 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { SocietyLeaderboard } from "@/components/SocietyLeaderboard";
+import { calculateEcoScore, calculateSocietyIndex, LEVEL_BG } from "@/lib/ecoScore";
+import { Progress } from "@/components/ui/progress";
 
 export default function Leaderboard() {
+  const [tab, setTab] = useState<"users" | "societies">("users");
   const sorted = [...mockUsers].sort((a, b) => b.points - a.points);
   const medals = ["🥇", "🥈", "🥉"];
+  const societyIndex = calculateSocietyIndex(mockUsers, mockPickups);
+
+  const tabs = [
+    { value: "users" as const, label: "Top Recyclers", icon: Trophy },
+    { value: "societies" as const, label: "Society Rankings", icon: Building2 },
+  ];
 
   return (
     <div className="max-w-2xl animate-fade-in">
@@ -13,80 +24,119 @@ export default function Leaderboard() {
         <h1 className="text-xl font-semibold">Leaderboard</h1>
       </div>
 
-      {/* Top 3 Podium */}
-      <div className="grid grid-cols-3 gap-3 mb-6">
-        {sorted.slice(0, 3).map((user, i) => (
-          <div
-            key={user.id}
-            className={`rounded-lg border bg-card p-4 text-center transition-snappy hover:border-primary/30 ${
-              i === 0 ? "ring-2 ring-primary/20" : ""
+      {/* Tabs */}
+      <div className="flex gap-2 mb-6">
+        {tabs.map((t) => (
+          <button
+            key={t.value}
+            onClick={() => setTab(t.value)}
+            className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-md border transition-snappy ${
+              tab === t.value
+                ? "bg-primary text-primary-foreground border-primary"
+                : "border-border hover:border-primary/30"
             }`}
           >
-            <span className="text-2xl">{medals[i]}</span>
-            <div className="font-semibold text-sm mt-2">{user.name}</div>
-            <div className="text-xs text-muted-foreground">{user.society}</div>
-            <div className="text-lg font-bold text-primary mt-1">{user.points.toLocaleString()}</div>
-            <div className="text-xs text-muted-foreground">points</div>
-            {user.badges && user.badges.length > 0 && (
-              <div className="flex justify-center gap-1 mt-2">
-                {user.badges.map((badge) => (
-                  <Tooltip key={badge.id}>
-                    <TooltipTrigger asChild>
-                      <span className="text-sm cursor-default">{badge.icon}</span>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p className="font-medium text-xs">{badge.name}</p>
-                      <p className="text-xs text-muted-foreground">{badge.description}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                ))}
-              </div>
-            )}
-          </div>
+            <t.icon className="h-3.5 w-3.5" />
+            {t.label}
+          </button>
         ))}
       </div>
 
-      {/* Full Ranking */}
-      <div className="rounded-lg border bg-card divide-y">
-        {sorted.map((user, i) => (
-          <div key={user.id} className="flex items-center gap-4 p-4">
-            <div className="w-8 text-center">
-              {i < 3 ? (
-                <span className="text-lg">{medals[i]}</span>
-              ) : (
-                <span className="text-sm font-medium text-muted-foreground">#{i + 1}</span>
-              )}
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="font-medium text-sm">{user.name}</div>
-              <div className="text-xs text-muted-foreground">{user.society} · {user.flat}</div>
-            </div>
-            <div className="flex items-center gap-2">
-              {user.badges && user.badges.length > 0 && (
-                <div className="flex gap-0.5">
-                  {user.badges.map((badge) => (
-                    <Tooltip key={badge.id}>
-                      <TooltipTrigger asChild>
-                        <span className="text-xs cursor-default">{badge.icon}</span>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p className="font-medium text-xs">{badge.name}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  ))}
+      {tab === "users" ? (
+        <>
+          {/* Top 3 Podium */}
+          <div className="grid grid-cols-3 gap-3 mb-6">
+            {sorted.slice(0, 3).map((user, i) => {
+              const eco = calculateEcoScore(user, mockPickups);
+              return (
+                <div
+                  key={user.id}
+                  className={`rounded-lg border bg-card p-4 text-center transition-snappy hover:border-primary/30 ${
+                    i === 0 ? "ring-2 ring-primary/20" : ""
+                  }`}
+                >
+                  <span className="text-2xl">{medals[i]}</span>
+                  <div className="font-semibold text-sm mt-2">{user.name}</div>
+                  <div className="text-xs text-muted-foreground">{user.society}</div>
+                  <div className="text-lg font-bold text-primary mt-1">{user.points.toLocaleString()}</div>
+                  <div className="text-xs text-muted-foreground">points</div>
+                  <span className={`inline-block text-[10px] font-medium px-1.5 py-0.5 rounded-full border mt-1 ${LEVEL_BG[eco.level]}`}>
+                    {eco.level}
+                  </span>
+                  {user.badges && user.badges.length > 0 && (
+                    <div className="flex justify-center gap-1 mt-2">
+                      {user.badges.map((badge) => (
+                        <Tooltip key={badge.id}>
+                          <TooltipTrigger asChild>
+                            <span className="text-sm cursor-default">{badge.icon}</span>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p className="font-medium text-xs">{badge.name}</p>
+                            <p className="text-xs text-muted-foreground">{badge.description}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              )}
-              <div className="text-right">
-                <div className="font-semibold text-sm text-primary">{user.points.toLocaleString()} pts</div>
-                <div className="text-xs text-muted-foreground flex items-center gap-1 justify-end">
-                  <Leaf className="h-3 w-3" />
-                  {user.carbonSaved} kg CO₂
-                </div>
-              </div>
-            </div>
+              );
+            })}
           </div>
-        ))}
-      </div>
+
+          {/* Full Ranking */}
+          <div className="rounded-lg border bg-card divide-y">
+            {sorted.map((user, i) => {
+              const eco = calculateEcoScore(user, mockPickups);
+              return (
+                <div key={user.id} className="flex items-center gap-4 p-4">
+                  <div className="w-8 text-center">
+                    {i < 3 ? (
+                      <span className="text-lg">{medals[i]}</span>
+                    ) : (
+                      <span className="text-sm font-medium text-muted-foreground">#{i + 1}</span>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-medium text-sm flex items-center gap-2">
+                      {user.name}
+                      <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full border ${LEVEL_BG[eco.level]}`}>
+                        {eco.level}
+                      </span>
+                    </div>
+                    <div className="text-xs text-muted-foreground">{user.society} · {user.flat}</div>
+                    <Progress value={eco.score} className="h-1 mt-1" />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {user.badges && user.badges.length > 0 && (
+                      <div className="flex gap-0.5">
+                        {user.badges.map((badge) => (
+                          <Tooltip key={badge.id}>
+                            <TooltipTrigger asChild>
+                              <span className="text-xs cursor-default">{badge.icon}</span>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="font-medium text-xs">{badge.name}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        ))}
+                      </div>
+                    )}
+                    <div className="text-right">
+                      <div className="font-semibold text-sm text-primary">{user.points.toLocaleString()} pts</div>
+                      <div className="text-xs text-muted-foreground flex items-center gap-1 justify-end">
+                        <Leaf className="h-3 w-3" />
+                        {user.carbonSaved} kg CO₂
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </>
+      ) : (
+        <SocietyLeaderboard societies={societyIndex} />
+      )}
     </div>
   );
 }
