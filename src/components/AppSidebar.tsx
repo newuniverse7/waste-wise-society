@@ -1,4 +1,4 @@
-import { Recycle, LayoutDashboard, Truck, ClipboardList, Trophy, Bell, BarChart3, Users, Settings, LogOut } from "lucide-react";
+import { Recycle, LayoutDashboard, Truck, ClipboardList, Trophy, Bell, BarChart3, Users, LogOut, Brain, Target, Gift, Leaf } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -19,6 +19,10 @@ const userLinks = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Request Pickup", url: "/dashboard/request", icon: Truck },
   { title: "My Requests", url: "/dashboard/history", icon: ClipboardList },
+  { title: "AI Classifier", url: "/dashboard/classify", icon: Brain },
+  { title: "Challenges", url: "/dashboard/challenges", icon: Target },
+  { title: "Marketplace", url: "/dashboard/marketplace", icon: Gift },
+  { title: "Carbon Impact", url: "/dashboard/impact", icon: Leaf },
   { title: "Leaderboard", url: "/dashboard/leaderboard", icon: Trophy },
   { title: "Notifications", url: "/dashboard/notifications", icon: Bell },
 ];
@@ -45,12 +49,22 @@ export function AppSidebar() {
   const label = auth.role === "admin" ? "Admin Panel" : auth.role === "worker" ? "Worker Panel" : "EcoTrack";
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="icon" className="border-r border-sidebar-border">
       <SidebarContent>
+        <div className="px-3 py-4 flex items-center gap-2">
+          <div className="h-8 w-8 rounded-lg gradient-primary flex items-center justify-center shadow-eco shrink-0">
+            <Recycle className="h-4 w-4 text-primary-foreground" />
+          </div>
+          {!collapsed && (
+            <div className="leading-tight">
+              <div className="font-display font-bold text-sidebar-foreground text-sm">EcoTrack</div>
+              <div className="text-[10px] text-sidebar-foreground/60 uppercase tracking-wider">{label}</div>
+            </div>
+          )}
+        </div>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-sidebar-foreground/70">
-            <Recycle className="mr-2 h-4 w-4" />
-            {!collapsed && label}
+          <SidebarGroupLabel className="text-sidebar-foreground/50 text-[10px] uppercase tracking-wider">
+            {!collapsed && "Menu"}
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -60,8 +74,8 @@ export function AppSidebar() {
                     <NavLink
                       to={item.url}
                       end
-                      className="transition-snappy hover:bg-sidebar-accent"
-                      activeClassName="bg-sidebar-accent text-sidebar-accent-foreground font-medium"
+                      className="transition-snappy hover:bg-sidebar-accent rounded-lg"
+                      activeClassName="bg-sidebar-accent text-sidebar-accent-foreground font-medium border-l-2 border-sidebar-primary"
                     >
                       <item.icon className="mr-2 h-4 w-4 shrink-0" />
                       {!collapsed && <span>{item.title}</span>}

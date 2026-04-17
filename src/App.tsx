@@ -4,13 +4,19 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import DashboardLayout from "@/components/DashboardLayout";
+import Landing from "@/pages/Landing";
 import LoginPage from "@/pages/LoginPage";
 import UserDashboard from "@/pages/UserDashboard";
 import RequestPickup from "@/pages/RequestPickup";
 import RequestHistory from "@/pages/RequestHistory";
 import Leaderboard from "@/pages/Leaderboard";
 import Notifications from "@/pages/Notifications";
+import AIClassifier from "@/pages/AIClassifier";
+import Challenges from "@/pages/Challenges";
+import Marketplace from "@/pages/Marketplace";
+import CarbonImpact from "@/pages/CarbonImpact";
 import AdminDashboard from "@/pages/AdminDashboard";
 import AdminPickups from "@/pages/AdminPickups";
 import AdminUsers from "@/pages/AdminUsers";
@@ -28,7 +34,9 @@ function AppRoutes() {
   if (!auth.isAuthenticated) {
     return (
       <Routes>
-        <Route path="*" element={<LoginPage />} />
+        <Route path="/" element={<Landing />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     );
   }
@@ -38,23 +46,28 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Navigate to={homeRedirect} replace />} />
+      <Route path="/login" element={<Navigate to={homeRedirect} replace />} />
 
-      {/* User Routes */}
       <Route element={<DashboardLayout />}>
+        {/* User */}
         <Route path="/dashboard" element={<UserDashboard />} />
         <Route path="/dashboard/request" element={<RequestPickup />} />
         <Route path="/dashboard/history" element={<RequestHistory />} />
         <Route path="/dashboard/leaderboard" element={<Leaderboard />} />
         <Route path="/dashboard/notifications" element={<Notifications />} />
+        <Route path="/dashboard/classify" element={<AIClassifier />} />
+        <Route path="/dashboard/challenges" element={<Challenges />} />
+        <Route path="/dashboard/marketplace" element={<Marketplace />} />
+        <Route path="/dashboard/impact" element={<CarbonImpact />} />
 
-        {/* Admin Routes */}
+        {/* Admin */}
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/pickups" element={<AdminPickups />} />
         <Route path="/admin/users" element={<AdminUsers />} />
         <Route path="/admin/workers" element={<AdminWorkers />} />
         <Route path="/admin/analytics" element={<AdminAnalytics />} />
 
-        {/* Worker Routes */}
+        {/* Worker */}
         <Route path="/worker" element={<WorkerDashboard />} />
         <Route path="/worker/active" element={<WorkerActive />} />
       </Route>
@@ -66,15 +79,17 @@ function AppRoutes() {
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <AppRoutes />
-        </BrowserRouter>
-      </TooltipProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <AppRoutes />
+          </BrowserRouter>
+        </TooltipProvider>
+      </AuthProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 
