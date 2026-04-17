@@ -8,6 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { QRCodeDisplay } from "@/components/QRCodeDisplay";
 import { toast } from "sonner";
 import { Truck, CheckCircle, Clock, Sun, Sunset, Moon, Package } from "lucide-react";
+import { celebrate } from "@/lib/confetti";
 
 const timeSlots = [
   { value: "morning", label: "Morning (8 AM – 12 PM)", icon: Sun, estimate: "~10:00 AM" },
@@ -29,6 +30,7 @@ export default function RequestPickup() {
     if (!wasteType) { toast.error("Please select a waste type"); return; }
     if (!timeSlot) { toast.error("Please select a time slot"); return; }
     setSubmitted(true);
+    celebrate("medium");
     toast.success(`Pickup request submitted! QR code: ${qrCode}`);
   };
 
