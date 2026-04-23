@@ -134,8 +134,8 @@ export default function SmartWasteSubmission() {
       const { data: inserted, error: insertErr } = await supabase
         .from("waste_submissions")
         .insert({
-          user_id: null,
-          user_name: auth.userName || "Guest",
+          user_id: auth.userId,
+          user_name: auth.userName,
           image_url: pub.publicUrl,
           packaging_type: classification.packaging_type,
           material_type: classification.material_type,

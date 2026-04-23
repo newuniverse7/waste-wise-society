@@ -32,6 +32,14 @@ const queryClient = new QueryClient();
 function AppRoutes() {
   const { auth } = useAuth();
 
+  if (auth.loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="h-10 w-10 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+      </div>
+    );
+  }
+
   if (!auth.isAuthenticated) {
     return (
       <Routes>
