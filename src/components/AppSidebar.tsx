@@ -1,4 +1,4 @@
-import { Recycle, LayoutDashboard, Truck, ClipboardList, Trophy, Bell, BarChart3, Users, LogOut, Brain, Target, Gift, Leaf } from "lucide-react";
+import { Recycle, LayoutDashboard, Truck, ClipboardList, Trophy, Bell, BarChart3, Users, LogOut, Brain, Target, Gift, Leaf, Sparkles } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 
 const userLinks = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+  { title: "Smart Submission", url: "/dashboard/smart-submit", icon: Sparkles },
   { title: "Request Pickup", url: "/dashboard/request", icon: Truck },
   { title: "My Requests", url: "/dashboard/history", icon: ClipboardList },
   { title: "AI Classifier", url: "/dashboard/classify", icon: Brain },

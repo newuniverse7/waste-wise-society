@@ -10,6 +10,7 @@ import Landing from "@/pages/Landing";
 import LoginPage from "@/pages/LoginPage";
 import UserDashboard from "@/pages/UserDashboard";
 import RequestPickup from "@/pages/RequestPickup";
+import SmartWasteSubmission from "@/pages/SmartWasteSubmission";
 import RequestHistory from "@/pages/RequestHistory";
 import Leaderboard from "@/pages/Leaderboard";
 import Notifications from "@/pages/Notifications";
@@ -52,6 +53,7 @@ function AppRoutes() {
         {/* User */}
         <Route path="/dashboard" element={<UserDashboard />} />
         <Route path="/dashboard/request" element={<RequestPickup />} />
+        <Route path="/dashboard/smart-submit" element={<SmartWasteSubmission />} />
         <Route path="/dashboard/history" element={<RequestHistory />} />
         <Route path="/dashboard/leaderboard" element={<Leaderboard />} />
         <Route path="/dashboard/notifications" element={<Notifications />} />
