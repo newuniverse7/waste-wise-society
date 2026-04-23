@@ -14,7 +14,72 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      waste_submissions: {
+        Row: {
+          address: string | null
+          ai_confidence: number | null
+          condition: string
+          created_at: string
+          detected_objects: Json | null
+          disposal_instructions: string | null
+          id: string
+          image_url: string
+          material_type: string | null
+          notes: string | null
+          packaging_type: string | null
+          pickup_required: boolean
+          pickup_time_slot: string | null
+          quantity: number
+          recyclability: string | null
+          reward_points: number
+          status: string
+          user_id: string | null
+          user_name: string | null
+        }
+        Insert: {
+          address?: string | null
+          ai_confidence?: number | null
+          condition?: string
+          created_at?: string
+          detected_objects?: Json | null
+          disposal_instructions?: string | null
+          id?: string
+          image_url: string
+          material_type?: string | null
+          notes?: string | null
+          packaging_type?: string | null
+          pickup_required?: boolean
+          pickup_time_slot?: string | null
+          quantity?: number
+          recyclability?: string | null
+          reward_points?: number
+          status?: string
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Update: {
+          address?: string | null
+          ai_confidence?: number | null
+          condition?: string
+          created_at?: string
+          detected_objects?: Json | null
+          disposal_instructions?: string | null
+          id?: string
+          image_url?: string
+          material_type?: string | null
+          notes?: string | null
+          packaging_type?: string | null
+          pickup_required?: boolean
+          pickup_time_slot?: string | null
+          quantity?: number
+          recyclability?: string | null
+          reward_points?: number
+          status?: string
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
