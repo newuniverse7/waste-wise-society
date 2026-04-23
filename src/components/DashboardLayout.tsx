@@ -2,11 +2,18 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { Outlet } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { Recycle } from "lucide-react";
+import { Recycle, LogOut } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export default function DashboardLayout() {
-  const { auth } = useAuth();
+  const { auth, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    await signOut();
+    toast.success("Signed out");
+  };
 
   return (
     <SidebarProvider>
@@ -22,10 +29,19 @@ export default function DashboardLayout() {
               <span className="font-display font-semibold text-sm">EcoTrack <span className="gradient-text">MBMC</span></span>
             </div>
             <div className="ml-auto flex items-center gap-3">
-              <div className="text-xs text-muted-foreground hidden sm:block">
-                <span className="capitalize font-medium text-foreground">{auth.role === "admin" ? "Admin" : auth.role === "worker" ? "Worker" : "Resident"}</span> · {auth.userName}
+              <div className="text-xs text-muted-foreground hidden sm:flex items-center gap-2">
+                <div className="h-7 w-7 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-primary-foreground text-xs font-semibold">
+                  {auth.userName?.charAt(0).toUpperCase() || "?"}
+                </div>
+                <div className="flex flex-col leading-tight">
+                  <span className="font-medium text-foreground">{auth.userName}</span>
+                  <span className="capitalize text-[10px]">{auth.role === "admin" ? "Admin" : auth.role === "worker" ? "Worker" : "Resident"}{auth.profile?.society ? ` · ${auth.profile.society}` : ""}</span>
+                </div>
               </div>
               <ThemeToggle />
+              <Button variant="ghost" size="icon" onClick={handleSignOut} title="Sign out">
+                <LogOut className="h-4 w-4" />
+              </Button>
             </div>
           </header>
           <main className="flex-1 p-4 md:p-6 overflow-auto relative">
