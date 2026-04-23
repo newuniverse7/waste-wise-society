@@ -42,7 +42,7 @@ const workerLinks = [
 ];
 
 export function AppSidebar() {
-  const { auth, logout } = useAuth();
+  const { auth, signOut } = useAuth();
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
 
@@ -98,7 +98,7 @@ export function AppSidebar() {
           variant="ghost"
           size="sm"
           className="w-full justify-start text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent"
-          onClick={logout}
+          onClick={signOut}
         >
           <LogOut className="mr-2 h-4 w-4" />
           {!collapsed && "Logout"}
